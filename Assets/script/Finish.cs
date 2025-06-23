@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class Finish : MonoBehaviour
 {
@@ -11,9 +13,17 @@ public class Finish : MonoBehaviour
     public MeshRenderer _renderer;
     public Sound_effect _effect;
     public AudioSource _audio;
+    public Image fadeImage;
+    public float duration = 4f;
     void Start()
-    {
-           
+    {   
+        
+        if(fadeImage.enabled == false)
+        {
+            fadeImage.enabled = true;
+            fadeImage.DOFade(0f, duration).SetEase(Ease.InOutQuad);
+        }
+        
     }
     void Update()
     {   
@@ -40,6 +50,9 @@ public class Finish : MonoBehaviour
         hasFinish = true;
         _effect.Finish();
         yield return new WaitForSeconds(_audio.clip.length);
-        SceneManager.LoadScene(Level);
+        fadeImage.DOFade(1f, duration).SetEase(Ease.InOutQuad).OnComplete(() =>
+        {
+            SceneManager.LoadSceneAsync(Level);
+        });
     }
 }
